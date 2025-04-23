@@ -1,14 +1,21 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
+// /index.js
+const fs = require('fs');
+const path = require('path');
 
-// Serve static files from the public directory
-app.use(express.static('public'));
-
-// Start the server
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
-
-// Export the app for Vercel
-module.exports = app;
+module.exports = (req, res) => {
+  if (req.url === '/' || req.url === '') {
+    const filePath = path.join(__dirname, 'public', 'index.html');
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.statusCode = 500;
+        res.end('Error loading index.html');
+      } else {
+        res.setHeader('Content-Type', 'text/html');
+        res.end(data);
+      }
+    });
+  } else {
+    res.statusCode = 404;
+    res.end('Not Found');
+  }
+};
