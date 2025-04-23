@@ -1,16 +1,15 @@
 const express = require('express');
 const app = express();
+const serverless = require('serverless-http'); // needed for Vercel
 
-// Root route
 app.get('/', (req, res) => {
   res.send('Timestamp Microservice. Use /api or /api/:date');
 });
 
-// API route
 app.get('/api/:date?', (req, res) => {
   const { date } = req.params;
-  let parsedDate;
 
+  let parsedDate;
   if (!date) {
     parsedDate = new Date();
   } else if (!isNaN(date)) {
@@ -29,4 +28,4 @@ app.get('/api/:date?', (req, res) => {
   });
 });
 
-module.exports = app;
+module.exports = serverless(app); // export handler for Vercel
