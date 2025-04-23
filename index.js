@@ -1,11 +1,16 @@
 const express = require('express');
+const path = require('path');
 const app = express();
-const serverless = require('serverless-http'); // needed for Vercel
 
+// Serve static frontend
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Root route
 app.get('/', (req, res) => {
-  res.send('Timestamp Microservice. Use /api or /api/:date');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Timestamp API
 app.get('/api/:date?', (req, res) => {
   const { date } = req.params;
 
@@ -28,4 +33,4 @@ app.get('/api/:date?', (req, res) => {
   });
 });
 
-module.exports = serverless(app); // export handler for Vercel
+module.exports = app;

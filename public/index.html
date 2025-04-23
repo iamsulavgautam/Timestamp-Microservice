@@ -1,58 +1,67 @@
-<!-- /public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Timestamp Microservice</title>
   <style>
     body {
-      font-family: sans-serif;
-      padding: 2rem;
+      font-family: system-ui, sans-serif;
+      background: #f7f7f7;
+      padding: 3rem;
       text-align: center;
-      background: #f0f0f0;
     }
-    input {
+    h1 {
+      font-size: 2rem;
+      color: #333;
+    }
+    code {
+      background: #eee;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    input, button {
+      margin: 1rem;
       padding: 0.5rem;
-      width: 300px;
+      font-size: 1rem;
     }
-    button {
-      padding: 0.5rem 1rem;
-      margin-left: 1rem;
-    }
-    .output {
+    #result {
       margin-top: 2rem;
-      font-weight: bold;
+      white-space: pre-wrap;
+      font-size: 1.1rem;
+      color: #222;
     }
   </style>
 </head>
 <body>
   <h1>Timestamp Microservice</h1>
-  <p>Enter a date (ISO string or UNIX timestamp):</p>
-  <input id="dateInput" placeholder="e.g. 2023-01-01 or 1672531199000" />
-  <button onclick="fetchTimestamp()">Convert</button>
+  <p>Try accessing <code>/api</code> or <code>/api/:date</code></p>
 
-  <div class="output" id="result"></div>
+  <input id="dateInput" placeholder="Enter date or UNIX timestamp" />
+  <button onclick="convert()">Convert</button>
+
+  <div id="result"></div>
 
   <script>
-    async function fetchTimestamp() {
-      const input = document.getElementById('dateInput').value.trim();
-      const resultEl = document.getElementById('result');
-  
+    async function convert() {
+      const input = document.getElementById("dateInput").value.trim();
+      const url = input ? `/api/${encodeURIComponent(input)}` : '/api';
+
       try {
-        const res = await fetch(`/api/timestamp${input ? '?date=' + encodeURIComponent(input) : ''}`);
+        const res = await fetch(url);
         const data = await res.json();
-  
-        if (!res.ok) {
-          throw new Error(data.error || 'Unknown error');
+
+        if (data.error) {
+          document.getElementById("result").innerText = "❌ " + data.error;
+        } else {
+          document.getElementById("result").innerText = 
+            `✅ Unix: ${data.unix}\n✅ UTC: ${data.utc}`;
         }
-  
-        resultEl.innerText = JSON.stringify(data, null, 2);
       } catch (err) {
-        resultEl.innerText = '❌ Error: ' + err.message;
+        document.getElementById("result").innerText = "❌ Failed to fetch.";
       }
     }
   </script>
-  
 </body>
 </html>
