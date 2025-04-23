@@ -1,0 +1,11 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "api/timestamp.js", "use": "@vercel/node" },
+      { "src": "public/**", "use": "@vercel/static" }
+    ],
+    "routes": [
+      { "src": "/api/timestamp/(.*)", "dest": "/api/timestamp.js" },
+      { "src": "/(.*)", "dest": "/public/$1" }
+    ]
+  }
