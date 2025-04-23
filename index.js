@@ -1,11 +1,16 @@
-// index.js
 const express = require('express');
 const app = express();
 
+// Root route
+app.get('/', (req, res) => {
+  res.send('Timestamp Microservice. Use /api or /api/:date');
+});
+
+// API route
 app.get('/api/:date?', (req, res) => {
   const { date } = req.params;
-
   let parsedDate;
+
   if (!date) {
     parsedDate = new Date();
   } else if (!isNaN(date)) {
@@ -15,7 +20,7 @@ app.get('/api/:date?', (req, res) => {
   }
 
   if (parsedDate.toString() === 'Invalid Date') {
-    return res.json({ error: "Invalid Date" });
+    return res.json({ error: 'Invalid Date' });
   }
 
   res.json({
