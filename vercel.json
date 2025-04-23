@@ -1,10 +1,11 @@
 {
   "version": 2,
   "builds": [
-    { "src": "index.js", "use": "@vercel/node" }
+    { "src": "index.js", "use": "@vercel/node" },
+    { "src": "api/timestamp.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "index.js" },
+    { "src": "/api/timestamp", "dest": "api/timestamp.js" },
     { "src": "/(.*)", "dest": "index.js" }
   ]
 }
