@@ -1,18 +1,17 @@
-// api/timestamp.js
 const express = require('express');
-const app = express();
+const router = express.Router();
 
-// Endpoint for converting date
-app.get('/api/timestamp/:date_string?', (req, res) => {
+// API endpoint for timestamp conversion
+router.get('/:date_string?', (req, res) => {
     try {
         let dateString = req.params.date_string;
         let date;
 
-        // If the date_string is not provided, use the current date
+        // If no date_string is provided, use current date
         if (!dateString) {
             date = new Date();
         } else {
-            // Try parsing as Unix timestamp if it's a number with no letters
+            // Try parsing as Unix timestamp if it's a number
             if (/^\d+$/.test(dateString)) {
                 date = new Date(parseInt(dateString));
             } else {
@@ -20,20 +19,19 @@ app.get('/api/timestamp/:date_string?', (req, res) => {
             }
         }
 
-        // Check if the date is invalid
+        // Check if date is invalid
         if (isNaN(date.getTime())) {
-            return res.status(400).json({ error: "Invalid Date" });
+            return res.json({ error: "Invalid Date" });
         }
 
-        // Return the JSON response
+        // Return JSON response
         res.json({
             unix: date.getTime(),
             utc: date.toUTCString()
         });
     } catch (error) {
-        res.status(400).json({ error: "Invalid Date" });
+        res.json({ error: "Invalid Date" });
     }
 });
 
-// For Vercel serverless functions
-module.exports = app;
+module.exports = router;
