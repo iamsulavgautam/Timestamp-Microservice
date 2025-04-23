@@ -37,10 +37,22 @@
   <script>
     async function fetchTimestamp() {
       const input = document.getElementById('dateInput').value.trim();
-      const res = await fetch(`/api/timestamp${input ? '?date=' + input : ''}`);
-      const data = await res.json();
-      document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+      const resultEl = document.getElementById('result');
+  
+      try {
+        const res = await fetch(`/api/timestamp${input ? '?date=' + encodeURIComponent(input) : ''}`);
+        const data = await res.json();
+  
+        if (!res.ok) {
+          throw new Error(data.error || 'Unknown error');
+        }
+  
+        resultEl.innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        resultEl.innerText = '❌ Error: ' + err.message;
+      }
     }
   </script>
+  
 </body>
 </html>
