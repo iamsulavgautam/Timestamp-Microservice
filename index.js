@@ -16,16 +16,15 @@ app.get('/api/timestamp/:date_string?', (req, res) => {
     if (!dateString) {
         date = new Date();  // Current date
     } else {
-        // Check if the date_string is a valid date or a Unix timestamp
-        // Parse as a Unix timestamp (if it's a number)
-        date = isNaN(dateString) 
+        // Try parsing as Unix timestamp first, if it's a valid number
+        date = isNaN(dateString)
             ? new Date(dateString)  // If it's a string, parse it as a date string
-            : new Date(parseInt(dateString)); // If it's a number, parse as a Unix timestamp
+            : new Date(parseInt(dateString)); // If it's a number, parse it as a Unix timestamp
     }
 
-    // Check if the date is invalid
-    if (date.getTime() !== date.getTime()) {  // This checks for an invalid date
-        return res.json({ error: 'Invalid Date' });
+    // Check if the date is invalid using isNaN on getTime()
+    if (isNaN(date.getTime())) {  // If date is invalid
+        return res.json({ error: "Invalid Date" });
     }
 
     // Return the JSON response with both Unix and UTC format
