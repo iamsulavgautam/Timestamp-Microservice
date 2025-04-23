@@ -14,12 +14,12 @@ app.get('/api/timestamp/:date_string?', (req, res) => {
 
     // If the date_string is not provided, use the current date
     if (!dateString) {
-        date = new Date();
+        date = new Date();  // Current date
     } else {
-        // Check if the date_string is a valid date or a Unix timestamp
+        // Try parsing as Unix timestamp first
         date = isNaN(dateString) 
-            ? new Date(dateString) 
-            : new Date(parseInt(dateString));
+            ? new Date(dateString)  // If it's a string, parse as date string
+            : new Date(parseInt(dateString)); // If it's a number, parse as Unix timestamp
     }
 
     // If the date is invalid, return an error
@@ -27,10 +27,10 @@ app.get('/api/timestamp/:date_string?', (req, res) => {
         return res.json({ error: 'Invalid Date' });
     }
 
-    // Return the JSON response with both Unix and natural format
+    // Return the JSON response with both Unix and UTC format
     res.json({
-        unix: date.getTime(),
-        utc: date.toUTCString()
+        unix: date.getTime(),  // Unix timestamp
+        utc: date.toUTCString()  // UTC date string
     });
 });
 
@@ -38,4 +38,3 @@ app.get('/api/timestamp/:date_string?', (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
