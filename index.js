@@ -1,21 +1,27 @@
-// /index.js
-const fs = require('fs');
-const path = require('path');
+// index.js
+const express = require('express');
+const app = express();
 
-module.exports = (req, res) => {
-  if (req.url === '/' || req.url === '') {
-    const filePath = path.join(__dirname, 'public', 'index.html');
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        res.statusCode = 500;
-        res.end('Error loading index.html');
-      } else {
-        res.setHeader('Content-Type', 'text/html');
-        res.end(data);
-      }
-    });
+app.get('/api/:date?', (req, res) => {
+  const { date } = req.params;
+
+  let parsedDate;
+  if (!date) {
+    parsedDate = new Date();
+  } else if (!isNaN(date)) {
+    parsedDate = new Date(parseInt(date));
   } else {
-    res.statusCode = 404;
-    res.end('Not Found');
+    parsedDate = new Date(date);
   }
-};
+
+  if (parsedDate.toString() === 'Invalid Date') {
+    return res.json({ error: "Invalid Date" });
+  }
+
+  res.json({
+    unix: parsedDate.getTime(),
+    utc: parsedDate.toUTCString()
+  });
+});
+
+module.exports = app;
