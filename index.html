@@ -1,5 +1,3 @@
-<!-- public/index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,33 +12,34 @@
     </style>
 </head>
 <body>
-
     <h1>Timestamp Microservice</h1>
     <p>Enter a date string (e.g., "January 1, 2025" or a Unix timestamp) to get the timestamp details.</p>
-
+    
     <input type="text" id="dateInput" placeholder="Enter date or timestamp">
     <button onclick="getTimestamp()">Submit</button>
-
+    
     <div class="result" id="result"></div>
-
+    
     <script>
         function getTimestamp() {
             const input = document.getElementById('dateInput').value;
             const resultDiv = document.getElementById('result');
-
+            
             // Clear previous results
             resultDiv.innerHTML = '';
-
+            
             // If input is empty, don't make a request
             if (!input) {
                 resultDiv.innerHTML = '<p>Please enter a date or timestamp.</p>';
                 return;
             }
-
+            
             // Make API request
-            fetch(`/api/timestamp/${input}`)
+            fetch(`/api/timestamp/${encodeURIComponent(input)}`)
                 .then(response => {
-                    // Check if response is valid JSON
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     return response.json();
                 })
                 .then(data => {
@@ -54,10 +53,10 @@
                     }
                 })
                 .catch(err => {
-                    resultDiv.innerHTML = `<p>Error: Could not fetch data. ${err}</p>`;
+                    resultDiv.innerHTML = `<p>Error: Could not fetch data. ${err.message}</p>`;
+                    console.error(err);
                 });
         }
     </script>
-
 </body>
 </html>
