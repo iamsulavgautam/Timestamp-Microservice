@@ -28,8 +28,21 @@
             const input = document.getElementById('dateInput').value;
             const resultDiv = document.getElementById('result');
 
+            // Clear previous results
+            resultDiv.innerHTML = '';
+
+            // If input is empty, don't make a request
+            if (!input) {
+                resultDiv.innerHTML = '<p>Please enter a date or timestamp.</p>';
+                return;
+            }
+
+            // Make API request
             fetch(`/api/timestamp/${input}`)
-                .then(response => response.json())
+                .then(response => {
+                    // Check if response is valid JSON
+                    return response.json();
+                })
                 .then(data => {
                     if (data.error) {
                         resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
@@ -41,7 +54,7 @@
                     }
                 })
                 .catch(err => {
-                    resultDiv.innerHTML = `<p>Error: ${err}</p>`;
+                    resultDiv.innerHTML = `<p>Error: Could not fetch data. ${err}</p>`;
                 });
         }
     </script>
